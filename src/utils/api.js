@@ -1,8 +1,6 @@
 // CoinGecko API 統一管理
-// UTF-8 中文註解
 import axios from "axios";
-
-// 取得 USDT/TWD 近 N 天價格資料
+// 取得 USDT/TWD 近 N 天價格資料（CoinGecko）
 export function getUsdtTwdHistory(days) {
   return axios
     .get("https://api.coingecko.com/api/v3/coins/tether/market_chart", {
@@ -20,20 +18,12 @@ export function getUsdtTwdHistory(days) {
     });
 }
 
-/**
- * 取得指定幣種的歷史價格資料
- * @param {number} days 歷史天數
- * @param {string} vs_currency 匯率幣值
- * @param {string} compare_to 比較幣種
- * @returns {Promise<Array>} 歷史價格資料
- */
-export function getHistory(days, vs_currency, compare_to) {
+export function getHistory(days, currency) {
   return axios
     .get("https://api.coingecko.com/api/v3/coins/tether/market_chart", {
       params: {
-        vs_currency: vs_currency,
+        vs_currency: currency,
         days: days,
-        compare_to: compare_to,
       },
     })
     .then(function (res) {
@@ -43,4 +33,15 @@ export function getHistory(days, vs_currency, compare_to) {
         throw new Error("找不到 CoinGecko 價格資料");
       }
     });
+}
+
+export function calExchangeRate(days,currency,base) {
+  const prices = getHistory(days,currency);
+  const basePrices = getHistory(days,base);
+
+  const exchangeRate = prices.map((price,index) => {
+    return [price[0],price[1]/basePrices[index][1]];
+  });
+
+  return exchangeRate;
 }

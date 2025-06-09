@@ -3,35 +3,50 @@
 </template>
 
 <script>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { useDark } from '@vueuse/core'
-import { getChartColors } from './ChartjsConfig'
+import { ref, watch, onMounted, onUnmounted } from "vue";
+import { useDark } from "@vueuse/core";
+import { getChartColors } from "./ChartjsConfig";
 
 import {
-  Chart, LineController, LineElement, Filler, PointElement, LinearScale, TimeScale, Tooltip,
-} from 'chart.js'
-import 'chartjs-adapter-moment'
+  Chart,
+  LineController,
+  LineElement,
+  Filler,
+  PointElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+} from "chart.js";
+import "chartjs-adapter-moment";
 
 // Import utilities
-import { formatValue } from '../utils/Utils'
+import { formatValue } from "../utils/Utils";
 
-Chart.register(LineController, LineElement, Filler, PointElement, LinearScale, TimeScale, Tooltip)
+Chart.register(
+  LineController,
+  LineElement,
+  Filler,
+  PointElement,
+  LinearScale,
+  TimeScale,
+  Tooltip
+);
 
 export default {
-  name: 'LineChart01',
-  props: ['data', 'width', 'height'],
+  name: "LineChart01",
+  props: ["data", "width", "height"],
   setup(props) {
+    const canvas = ref(null);
+    let chart = null;
+    const darkMode = useDark();
+    const { tooltipBodyColor, tooltipBgColor, tooltipBorderColor } =
+      getChartColors();
 
-    const canvas = ref(null)
-    let chart = null
-    const darkMode = useDark()
-    const { tooltipBodyColor, tooltipBgColor, tooltipBorderColor } = getChartColors()
-    
     onMounted(() => {
-      const ctx = canvas.value
+      const ctx = canvas.value;
 
       chart = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: props.data,
         options: {
           layout: {
@@ -57,9 +72,15 @@ export default {
                 title: () => false, // Disable tooltip title
                 label: (context) => formatValue(context.parsed.y),
               },
-              bodyColor: darkMode.value ? tooltipBodyColor.dark : tooltipBodyColor.light,
-              backgroundColor: darkMode.value ? tooltipBgColor.dark : tooltipBgColor.light,
-              borderColor: darkMode.value ? tooltipBorderColor.dark : tooltipBorderColor.light,
+              bodyColor: darkMode.value
+                ? tooltipBodyColor.dark
+                : tooltipBodyColor.light,
+              backgroundColor: darkMode.value
+                ? tooltipBgColor.dark
+                : tooltipBgColor.light,
+              borderColor: darkMode.value
+                ? tooltipBorderColor.dark
+                : tooltipBorderColor.light,
             },
             legend: {
               display: false,
@@ -67,30 +88,32 @@ export default {
           },
           interaction: {
             intersect: false,
-            mode: 'nearest',
+            mode: "nearest",
           },
           maintainAspectRatio: false,
           resizeDelay: 200,
         },
-      })
-    })
+      });
+    });
 
-    onUnmounted(() => chart.destroy())
+    onUnmounted(() => chart.destroy());
 
     watch(
       () => darkMode.value,
       () => {
         if (darkMode.value) {
-          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.dark
-          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.dark
-          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.dark
+          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.dark;
+          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.dark;
+          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.dark;
         } else {
-          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.light
-          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.light
-          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.light
+          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.light;
+          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.light;
+          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.light;
         }
-        chart.update('none')
-    })    
+        chart.update("none");
+      }
+    );
+
     // 監聽 data 變動，自動更新 chart
     watch(
       () => props.data,
@@ -105,7 +128,7 @@ export default {
 
     return {
       canvas,
-    }
-  }
-}
+    };
+  },
+};
 </script>
