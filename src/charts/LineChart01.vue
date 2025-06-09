@@ -43,10 +43,10 @@ export default {
               beginAtZero: true,
             },
             x: {
-              type: 'time',
+              type: "time",
               time: {
-                parser: 'MM-DD-YYYY',
-                unit: 'month',
+                parser: "YYYY-M-D",
+                unit: "month",
               },
               display: false,
             },
@@ -91,6 +91,17 @@ export default {
         }
         chart.update('none')
     })    
+    // 監聽 data 變動，自動更新 chart
+    watch(
+      () => props.data,
+      (newData) => {
+        if (chart) {
+          chart.data = newData;
+          chart.update();
+        }
+      },
+      { deep: true }
+    );
 
     return {
       canvas,
