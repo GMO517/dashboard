@@ -81,56 +81,31 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
-import Sidebar from '../partials/Sidebar.vue'
-import Header from '../partials/Header.vue'
-import FilterButton from '../components/DropdownFilter.vue'
-import Datepicker from '../components/Datepicker.vue'
-import DashboardCard01 from '../partials/dashboard/DashboardCard01.vue'
-import DashboardCard02 from '../partials/dashboard/DashboardCard02.vue'
-import DashboardCard03 from '../partials/dashboard/DashboardCard03.vue'
-import DashboardCard04 from '../partials/dashboard/DashboardCard04.vue'
-import DashboardCard05 from '../partials/dashboard/DashboardCard05.vue'
-import DashboardCard06 from '../partials/dashboard/DashboardCard06.vue'
-import DashboardCard07 from '../partials/dashboard/DashboardCard07.vue'
-import DashboardCard08 from '../partials/dashboard/DashboardCard08.vue'
-import DashboardCard09 from '../partials/dashboard/DashboardCard09.vue'
-import DashboardCard10 from '../partials/dashboard/DashboardCard10.vue'
-import DashboardCard11 from '../partials/dashboard/DashboardCard11.vue'
-import DashboardCard12 from '../partials/dashboard/DashboardCard12.vue'
-import DashboardCard13 from '../partials/dashboard/DashboardCard13.vue'
-import Banner from '../partials/Banner.vue'
+<script setup>
+import { ref, onMounted } from "vue";
+import { useCurrencyStore } from "../store/currency";
+import Sidebar from "../partials/Sidebar.vue";
+import Header from "../partials/Header.vue";
+import FilterButton from "../components/DropdownFilter.vue";
+import Datepicker from "../components/Datepicker.vue";
+import DashboardCard01 from "../partials/dashboard/DashboardCard01.vue";
+import DashboardCard02 from "../partials/dashboard/DashboardCard02.vue";
+import DashboardCard03 from "../partials/dashboard/DashboardCard03.vue";
+import DashboardCard04 from "../partials/dashboard/DashboardCard04.vue";
+import DashboardCard05 from "../partials/dashboard/DashboardCard05.vue";
+import DashboardCard06 from "../partials/dashboard/DashboardCard06.vue";
+import DashboardCard07 from "../partials/dashboard/DashboardCard07.vue";
+import DashboardCard08 from "../partials/dashboard/DashboardCard08.vue";
+import DashboardCard09 from "../partials/dashboard/DashboardCard09.vue";
+import DashboardCard10 from "../partials/dashboard/DashboardCard10.vue";
+import DashboardCard11 from "../partials/dashboard/DashboardCard11.vue";
+import DashboardCard12 from "../partials/dashboard/DashboardCard12.vue";
+import DashboardCard13 from "../partials/dashboard/DashboardCard13.vue";
+import Banner from "../partials/Banner.vue";
 
-export default {
-  name: 'Dashboard',
-  components: {
-    Sidebar,
-    Header,
-    FilterButton,
-    Datepicker,
-    DashboardCard01,
-    DashboardCard02,
-    DashboardCard03,
-    DashboardCard04,
-    DashboardCard05,
-    DashboardCard06,
-    DashboardCard07,
-    DashboardCard08,
-    DashboardCard09,
-    DashboardCard10,
-    DashboardCard11,
-    DashboardCard12,
-    DashboardCard13,
-    Banner,
-  },
-  setup() {
+const sidebarOpen = ref(false);
 
-    const sidebarOpen = ref(false)
-
-    return {
-      sidebarOpen,
-    }  
-  }
-}
+// 取得匯率幣別清單，供所有子組件共用
+const currencyStore = useCurrencyStore();
+onMounted(currencyStore.fetchCurrencyList);
 </script>
