@@ -11,7 +11,7 @@
         </h2>
         <el-select
           v-model="currency1"
-          placeholder="Select"
+          placeholder="貨幣1"
           @change="onSelectChange"
         >
           <el-option
@@ -23,7 +23,7 @@
         </el-select>
         <el-select
           v-model="currency2"
-          placeholder="Select"
+          placeholder="貨幣2"
           @change="onSelectChange"
         >
           <el-option
@@ -40,17 +40,27 @@
         rates
       </div>
       <div class="flex items-start">
-        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">
+        <div
+          class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2"
+          v-if="isCalculated"
+        >
           ${{ currentRate }}
         </div>
         <div
-          v-if="isDailyGrowth"
+          v-else
+          class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2"
+          v-if="!isCalculated"
+        >
+          請先選擇想要計算的貨幣
+        </div>
+        <div
+          v-if="isDailyGrowth && isCalculated"
           class="text-sm font-medium text-green-700 px-1.5 bg-green-500/20 rounded-full"
         >
           {{ dailyChangePct }}%
         </div>
         <div
-          v-else
+          v-else-if="!isDailyGrowth && isCalculated"
           class="text-sm font-medium text-red-700 px-1.5 bg-red-500/20 rounded-full"
         >
           {{ dailyChangePct }}%
@@ -68,18 +78,18 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useCurrencyStore } from "../../store/currency";
+import { useExchangeStore } from "../../store/exchange";
+
 import { storeToRefs } from "pinia";
 import LineChart from "../../charts/LineChart01.vue";
-import { calExchangeRate } from "../../utils/exchange";
 import { createLineDataset } from "../../utils/chart";
 
 const currencyStore = useCurrencyStore();
 const { supportCurrencyList } = storeToRefs(currencyStore);
-onMounted(currencyStore.fetchCurrencyList);
 
 const currency1 = ref("");
 const currency2 = ref("");
-
+const isCalculated = ref(false);
 // 狀態：匯率、漲跌幅、漲跌方向、圖表資料
 const currentRate = ref(0);
 const dailyChangePct = ref(0);
@@ -90,13 +100,26 @@ const chartData = ref({
 });
 
 const onSelectChange = async function () {
+  const exchangeStore = useExchangeStore();
+
+  // 只對有值的幣別做快取
+  if (currency1.value) {
+    await exchangeStore.fetchHistory(7, currency1.value);
+  }
+  if (currency2.value) {
+    await exchangeStore.fetchHistory(7, currency2.value);
+  }
+
+  // 兩個選項都選完 才計算匯率
   if (!currency1.value || !currency2.value) return;
-  // 取得匯率資料
-  const exchangeRate = await calExchangeRate(
-    7,
-    currency1.value,
-    currency2.value
-  );
+
+  // 計算匯率資料（直接用快取資料，不重複請求）
+  const prices = await exchangeStore.fetchHistory(7, currency1.value);
+  const basePrices = await exchangeStore.fetchHistory(7, currency2.value);
+
+  const exchangeRate = prices.map(function (price, index) {
+    return [price[0], price[1] / basePrices[index][1]];
+  });
   // 更新圖表資料
   const newLabels = exchangeRate.map(function (item) {
     var d = new Date(item[0]);
@@ -117,5 +140,6 @@ const onSelectChange = async function () {
     dailyChangePct.value = (((last - prev) / prev) * 100).toFixed(2);
     isDailyGrowth.value = dailyChangePct.value > 0;
   }
+  isCalculated.value = true;
 };
 </script>

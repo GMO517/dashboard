@@ -2,7 +2,11 @@
 import { defineStore } from "pinia";
 import { getSupportCurrencyList } from "../utils/api";
 
-export const useCurrencyStore = defineStore("currencyNameList", {
+const CACHE_KEY = "supportCurrencyList";
+const CACHE_EXPIRE_KEY = "supportCurrencyListExpire";
+const CACHE_EXPIRE_MS = 7 * 24 * 60 * 60 * 1000; // 7天
+
+export const useCurrencyStore = defineStore("currency", {
   // state 用來存放全域響應式資料
   state: () => ({
     // 支援的幣別清單，供全站共用
@@ -14,19 +18,28 @@ export const useCurrencyStore = defineStore("currencyNameList", {
   // actions 用來定義可呼叫的函式（通常是異步操作或邏輯處理）
   actions: {
     async fetchCurrencyList() {
-      // 如果已經載入過就不重複請求
-      if (this.loaded) return;
-      // 呼叫 API 取得清單
+      // 1. 先檢查 localStorage
+      const cache = localStorage.getItem(CACHE_KEY);
+      const expire = localStorage.getItem(CACHE_EXPIRE_KEY);
+      const now = Date.now();
+      if (cache && expire && now < Number(expire)) {
+        this.supportCurrencyList = JSON.parse(cache);
+        this.loaded = true;
+        return;
+      }
+      // 2. 沒有快取才請求 API
       const res = await getSupportCurrencyList();
-      // 將回傳的字串陣列轉成 { label, value } 物件陣列
-      this.supportCurrencyList = res.data.map(function (item) {
-        return {
-          label: item.toUpperCase(), // 顯示大寫
-          value: item,
-        };
-      });
-      // 標記已載入
+      this.supportCurrencyList = res.data.map((item) => ({
+        label: item.toUpperCase(),
+        value: item,
+      }));
       this.loaded = true;
+      // 3. 存入 localStorage 並設過期時間
+      localStorage.setItem(CACHE_KEY, JSON.stringify(this.supportCurrencyList));
+      localStorage.setItem(
+        CACHE_EXPIRE_KEY,
+        (now + CACHE_EXPIRE_MS).toString()
+      );
     },
   },
 });
