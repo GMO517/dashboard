@@ -3,33 +3,36 @@
     class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl"
   >
     <div class="px-5 pt-5">
-      <header class="flex justify-between items-start mb-2">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          匯率 
+      <header class="flex justify-between items-start mb-2 gap-x-4">
+        <h2
+          class="text-lg font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap"
+        >
+          匯率
         </h2>
-        <EditMenu align="right" class="relative inline-flex">
-          <li>
-            <a
-              class="font-medium text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 flex py-1 px-3"
-              href="#0"
-              >Option 1</a
-            >
-          </li>
-          <li>
-            <a
-              class="font-medium text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 flex py-1 px-3"
-              href="#0"
-              >Option 2</a
-            >
-          </li>
-          <li>
-            <a
-              class="font-medium text-sm text-red-500 hover:text-red-600 flex py-1 px-3"
-              href="#0"
-              >Remove</a
-            >
-          </li>
-        </EditMenu>
+        <el-select
+          v-model="currency1"
+          placeholder="Select"
+          @change="onSelectChange"
+        >
+          <el-option
+            v-for="item in supportCurrencyList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <el-select
+          v-model="currency2"
+          placeholder="Select"
+          @change="onSelectChange"
+        >
+          <el-option
+            v-for="item in supportCurrencyList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </header>
       <div
         class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1"
@@ -63,13 +66,56 @@
 </template>
 
 <script setup>
+import { ref, onMounted, computed } from "vue";
+import { useCurrencyStore } from "../../store/currency";
+import { storeToRefs } from "pinia";
 import LineChart from "../../charts/LineChart01.vue";
-import EditMenu from "../../components/DropdownEditMenu.vue";
+import { calExchangeRate } from "../../utils/exchange";
+import { createLineDataset } from "../../utils/chart";
 
-// 匯率圖表 Composable
-import { useChartData } from "../../composables/useChartData";
+const currencyStore = useCurrencyStore();
+const { supportCurrencyList } = storeToRefs(currencyStore);
+onMounted(currencyStore.fetchCurrencyList);
 
-// 解構出所有響應式資料
-const { chartData, currentRate, dailyChangePct, isDailyGrowth } =
-  useChartData();
+const currency1 = ref("");
+const currency2 = ref("");
+
+// 狀態：匯率、漲跌幅、漲跌方向、圖表資料
+const currentRate = ref(0);
+const dailyChangePct = ref(0);
+const isDailyGrowth = ref(true);
+const chartData = ref({
+  labels: [],
+  datasets: [createLineDataset([])],
+});
+
+const onSelectChange = async function () {
+  if (!currency1.value || !currency2.value) return;
+  // 取得匯率資料
+  const exchangeRate = await calExchangeRate(
+    7,
+    currency1.value,
+    currency2.value
+  );
+  // 更新圖表資料
+  const newLabels = exchangeRate.map(function (item) {
+    var d = new Date(item[0]);
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  });
+  const newData = exchangeRate.map(function (item) {
+    return item[1];
+  });
+  chartData.value = {
+    labels: newLabels,
+    datasets: [createLineDataset(newData)],
+  };
+  // 更新匯率與漲跌幅
+  if (exchangeRate.length > 1) {
+    const last = exchangeRate[exchangeRate.length - 1][1];
+    const prev = exchangeRate[exchangeRate.length - 2][1];
+    currentRate.value = last.toFixed(2);
+    dailyChangePct.value = (((last - prev) / prev) * 100).toFixed(2);
+    isDailyGrowth.value = dailyChangePct.value > 0;
+  }
+};
 </script>

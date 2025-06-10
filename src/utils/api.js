@@ -1,9 +1,14 @@
 // CoinGecko API 統一管理
 import axios from "axios";
-// 取得 USDT/TWD 近 N 天價格資料（CoinGecko）
+
+/**
+ * 取得 USDT/TWD 近 N 天價格資料（CoinGecko）
+ * @param {number} days - 天數
+ * @returns {Array} 價格資料
+ */
 export function getUsdtTwdHistory(days) {
   return axios
-    .get("https://api.coingecko.com/api/v3/coins/tether/market_chart", {
+    .get("/api/v3/coins/tether/market_chart", {
       params: {
         vs_currency: "twd",
         days: days,
@@ -18,9 +23,24 @@ export function getUsdtTwdHistory(days) {
     });
 }
 
-export function getHistory(days, currency) {
+// sleep 工具函式
+function sleep(ms) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, ms);
+  });
+}
+
+/**
+ * 取得幣值價格資料
+ * @param {number} days - 天數
+ * @param {string} currency - 幣值
+ * @returns {Array} 價格資料
+ */
+export async function getHistory(days, currency) {
+  // 每次請求都自動延遲 300ms，避免 API 被限制
+  await sleep(1000);
   return axios
-    .get("https://api.coingecko.com/api/v3/coins/tether/market_chart", {
+    .get("/api/v3/coins/tether/market_chart", {
       params: {
         vs_currency: currency,
         days: days,
@@ -35,13 +55,7 @@ export function getHistory(days, currency) {
     });
 }
 
-export function calExchangeRate(days,currency,base) {
-  const prices = getHistory(days,currency);
-  const basePrices = getHistory(days,base);
-
-  const exchangeRate = prices.map((price,index) => {
-    return [price[0],price[1]/basePrices[index][1]];
-  });
-
-  return exchangeRate;
+//取得支援匯率的文字清單
+export function getSupportCurrencyList() {
+  return axios.get("/api/v3/simple/supported_vs_currencies");
 }

@@ -2,7 +2,6 @@
 import { defineStore } from "pinia";
 import { getSupportCurrencyList } from "../utils/api";
 
-
 export const useCurrencyStore = defineStore("currencyNameList", {
   // state 用來存放全域響應式資料
   state: () => ({
