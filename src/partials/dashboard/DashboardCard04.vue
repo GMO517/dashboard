@@ -37,6 +37,7 @@ import { ref, watch, onMounted } from "vue";
 import BarChart from "../../charts/BarChart01.vue";
 import { getCssVariable } from "../../utils/Utils";
 import country from "../../utils/country";
+import { convertToTC } from "../../utils/convert";
 
 const selectedCountries = ref([]);
 const countriesNameList = ref([]);
@@ -68,10 +69,19 @@ const chartData = ref(defaultData);
 // 取得所有國家名稱
 onMounted(async () => {
   const res = await country.getAllCountriesName();
-  countriesNameList.value = res.map((item) => ({
-    label: item.name.common,
-    value: item.name.common,
-  }));
+  countriesNameList.value = res
+    .map((item) => {
+      // 取繁體中文譯名，沒有就用英文
+      const twName =
+        item.translations?.cht?.common ||
+        item.translations?.zho?.common ||
+        item.name.common;
+      return {
+        label: convertToTC(twName),
+        value: convertToTC(item.name.common),
+      };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, "zh-Hant"));
 });
 
 // 查詢多個國家
@@ -87,7 +97,11 @@ async function fetchCountriesData(data) {
     const res = await country.getCountryDetail(countryName);
     const area = res.data[0]?.area || 0;
     const population = res.data[0]?.population || 0;
-    labelsArr.push(countryName);
+    // 這裡根據英文名稱找繁體譯名
+    const label =
+      countriesNameList.value.find((item) => item.value === countryName)
+        ?.label || countryName;
+    labelsArr.push(label);
     populationArr.push(population);
     areaArr.push(area);
   }

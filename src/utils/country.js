@@ -1,11 +1,11 @@
 import { CountryAPI } from "./api";
 
 /**
- * 取得所有國家資料
+ * 取得所有國家資料（含繁體中文譯名）
  * @returns {Array} 國家資料
  */
 export async function getAllCountriesName() {
-  const res = await CountryAPI.get("/all?fields=name");
+  const res = await CountryAPI.get("/all?fields=name,translations");
   return res.data;
 }
 
