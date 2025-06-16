@@ -9,6 +9,19 @@ export const formatThousands = (value) => Intl.NumberFormat('en-US', {
   maximumSignificantDigits: 3,
   notation: 'compact',
 }).format(value);
+export const formatTWNumber = (value) => {
+  if (value == null || isNaN(value)) return "";
+  if (value >= 1_0000_0000) {
+    // 億
+    return (value / 1_0000_0000).toFixed(2).replace(/\.00$/, "") + "億";
+  } else if (value >= 1_0000) {
+    // 萬
+    return (value / 1_0000).toFixed(2).replace(/\.00$/, "") + "萬";
+  } else {
+    // 千分位
+    return value.toLocaleString("zh-TW");
+  }
+}
 
 export const getCssVariable = (variable) => {
   return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
