@@ -16,6 +16,7 @@
     "element-plus": "^2.10.1",
     "flatpickr": "^4.6.13",
     "moment": "^2.29.4",
+    "opencc-js": "^1.0.5",
     "pinia": "^3.0.3",
     "vue": "^3.2.20",
     "vue-flatpickr-component": "^11.0.3",
