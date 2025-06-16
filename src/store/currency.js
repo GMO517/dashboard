@@ -1,6 +1,6 @@
 // 匯率幣別清單 Pinia 狀態管理
 import { defineStore } from "pinia";
-import { getSupportCurrencyList } from "../utils/api";
+import { CoinGeckoAPI } from "../utils/api";
 
 const CACHE_KEY = "supportCurrencyList";
 const CACHE_EXPIRE_KEY = "supportCurrencyListExpire";
@@ -43,3 +43,52 @@ export const useCurrencyStore = defineStore("currency", {
     },
   },
 });
+
+// 取得 USDT/TWD 近 N 天價格資料（CoinGecko）
+export function getUsdtTwdHistory(days) {
+  return CoinGeckoAPI.get("/coins/tether/market_chart", {
+    params: {
+      vs_currency: "twd",
+      days: days,
+    },
+  }).then(function (res) {
+    if (res.data && res.data.prices) {
+      return res.data.prices;
+    } else {
+      throw new Error("找不到 CoinGecko 價格資料");
+    }
+  });
+}
+
+// 取得幣值價格資料
+export async function getHistory(days, currency) {
+  await new Promise(function (resolve) {
+    setTimeout(resolve, 1000);
+  });
+  const res = await CoinGeckoAPI.get("/coins/tether/market_chart", {
+    params: {
+      vs_currency: currency,
+      days: days,
+    },
+  });
+  if (res.data && res.data.prices) {
+    return res.data.prices;
+  } else {
+    throw new Error("找不到 CoinGecko 價格資料");
+  }
+}
+
+// 取得支援匯率的文字清單
+export async function getSupportCurrencyList() {
+  const res = await CoinGeckoAPI.get("/simple/supported_vs_currencies");
+  return res;
+}
+
+const currencyStore = {
+  useCurrencyStore,
+  getUsdtTwdHistory,
+  getHistory,
+  getSupportCurrencyList,
+};
+
+export default currencyStore;

@@ -38,3 +38,9 @@ export function createLineDataset(data) {
     tension: 0.2,
   };
 }
+
+const chartUtils = {
+  createLineDataset,
+};
+
+export default chartUtils;

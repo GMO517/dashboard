@@ -1,3 +1,4 @@
+<!-- 匯率卡片組件 -->
 <template>
   <div
     class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-xs rounded-xl"
@@ -76,7 +77,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref } from "vue";
+import currency from "../../store/currency";
+import exchange from "../../store/exchange";
+import chartUtils from "../../utils/chart";
 import { useCurrencyStore } from "../../store/currency";
 import { useExchangeStore } from "../../store/exchange";
 

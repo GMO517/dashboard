@@ -1,4 +1,4 @@
-import { getHistory } from "./api";
+import currency from "./currency";
 
 /**
  * 計算指定法幣的匯率
@@ -7,12 +7,18 @@ import { getHistory } from "./api";
  * @param {string} base - 基準幣值
  * @returns {Array} 匯率資料
  */
-export async function calExchangeRate(days, currency, base) {
-  const prices = await getHistory(days, currency);
-  const basePrices = await getHistory(days, base);
+export async function calExchangeRate(days, currencyName, base) {
+  const prices = await currency.getHistory(days, currencyName);
+  const basePrices = await currency.getHistory(days, base);
 
   const exchangeRate = prices.map(function (price, index) {
     return [price[0], price[1] / basePrices[index][1]];
   });
   return exchangeRate;
 }
+
+const exchange = {
+  calExchangeRate,
+};
+
+export default exchange;

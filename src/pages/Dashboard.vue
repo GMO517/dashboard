@@ -92,7 +92,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useCurrencyStore } from "../store/currency";
+import currency from "../store/currency";
 import Sidebar from "../partials/Sidebar.vue";
 import Header from "../partials/Header.vue";
 import FilterButton from "../components/DropdownFilter.vue";
@@ -115,6 +115,6 @@ import Banner from "../partials/Banner.vue";
 const sidebarOpen = ref(false);
 
 // 取得匯率幣別清單，供所有子組件共用
-const currencyStore = useCurrencyStore();
+const currencyStore = currency.useCurrencyStore();
 onMounted(currencyStore.fetchCurrencyList);
 </script>
