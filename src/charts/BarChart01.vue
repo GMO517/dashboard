@@ -18,7 +18,7 @@ import {
 import 'chartjs-adapter-moment'
 
 // Import utilities
-import { formatValue } from '../utils/Utils'
+import { formatTWNumber } from "../utils/Utils";
 
 Chart.register(BarController, BarElement, LinearScale, TimeScale, Tooltip, Legend)
 
@@ -54,7 +54,7 @@ export default {
               },
               ticks: {
                 maxTicksLimit: 5,
-                callback: (value) => formatValue(value),
+                callback: (value) => formatTWNumber(value),
                 color: darkMode.value ? textColor.dark : textColor.light,
               },
               grid: {
@@ -62,7 +62,7 @@ export default {
               },              
             },
             x: {
-              type: 'time',
+              type: "category",
               time: {
                 parser: 'MM-DD-YYYY',
                 unit: 'month',
@@ -88,7 +88,7 @@ export default {
             tooltip: {
               callbacks: {
                 title: () => false, // Disable tooltip title
-                label: (context) => formatValue(context.parsed.y),
+                label: (context) => formatTWNumber(context.parsed.y),
               },
               bodyColor: darkMode.value ? tooltipBodyColor.dark : tooltipBodyColor.light,
               backgroundColor: darkMode.value ? tooltipBgColor.dark : tooltipBgColor.light,
@@ -168,6 +168,17 @@ export default {
         }],
       })
     })
+    // 監聽外部 data 變動，手動更新 chart
+    watch(
+      () => props.data,
+      (newData) => {
+        if (chart) {
+          chart.data = newData;
+          chart.update();
+        }
+      },
+      { deep: true }
+    );
 
     onUnmounted(() => chart.destroy())
 
