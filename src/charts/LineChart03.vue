@@ -60,14 +60,14 @@ export default {
             x: {
               type: "time",
               time: {
-                unit: "month",
-                tooltipFormat: "YYYY-MM-DD",
+                unit: "year",
+                tooltipFormat: "YYYY",
               },
               ticks: {
                 autoSkip: true,
-                maxTicksLimit: 10,
+                maxTicksLimit: 5,
               },
-              display: false,
+              display: true,
             },
           },
           plugins: {
