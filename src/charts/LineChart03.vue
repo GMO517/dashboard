@@ -60,8 +60,8 @@ export default {
             x: {
               type: "time",
               time: {
-                unit: "year",
-                tooltipFormat: "YYYY",
+                unit: "month",
+                tooltipFormat: "YYYY-MM",
               },
               ticks: {
                 autoSkip: true,
@@ -73,8 +73,12 @@ export default {
           plugins: {
             tooltip: {
               callbacks: {
-                title: () => false, // Disable tooltip title
-                label: (context) => formatTWNumber(context.parsed.y),
+                title: (context) => {
+                  return context[0].label;
+                },
+                label: (context) => {
+                  return formatTWNumber(context.parsed.y);
+                },
               },
               bodyColor: darkMode.value
                 ? tooltipBodyColor.dark
