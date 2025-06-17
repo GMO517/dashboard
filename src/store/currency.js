@@ -38,7 +38,7 @@ export const useCurrencyStore = defineStore("currency", {
       localStorage.setItem(CACHE_KEY, JSON.stringify(this.supportCurrencyList));
       localStorage.setItem(
         CACHE_EXPIRE_KEY,
-        (now + CACHE_EXPIRE_MS).toString()
+        (now + CACHE_EXPIRE_MS).toString(),
       );
     },
   },

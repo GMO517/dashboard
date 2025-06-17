@@ -32,7 +32,7 @@ Chart.register(
   LinearScale,
   TimeScale,
   Tooltip,
-  Legend
+  Legend,
 );
 
 export default {
@@ -151,7 +151,7 @@ export default {
                 button.onclick = () => {
                   c.setDatasetVisibility(
                     item.datasetIndex,
-                    !c.isDatasetVisible(item.datasetIndex)
+                    !c.isDatasetVisible(item.datasetIndex),
                   );
                   c.update();
                 };
@@ -182,10 +182,10 @@ export default {
                 label.style.lineHeight = "calc(1.25 / 0.875)";
                 const theValue = c.data.datasets[item.datasetIndex].data.reduce(
                   (a, b) => a + b,
-                  0
+                  0,
                 );
                 const valueText = document.createTextNode(
-                  formatTWNumber(theValue)
+                  formatTWNumber(theValue),
                 );
                 const labelText = document.createTextNode(item.text);
                 value.appendChild(valueText);
@@ -211,7 +211,7 @@ export default {
           chart.update();
         }
       },
-      { deep: true }
+      { deep: true },
     );
 
     onUnmounted(() => chart.destroy());
@@ -235,7 +235,7 @@ export default {
           chart.options.plugins.tooltip.borderColor = tooltipBorderColor.light;
         }
         chart.update("none");
-      }
+      },
     );
 
     return {

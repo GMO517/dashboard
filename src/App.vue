@@ -3,6 +3,5 @@
 </template>
 
 <script>
-import './charts/ChartjsConfig';
+import "./charts/ChartjsConfig";
 </script>
-

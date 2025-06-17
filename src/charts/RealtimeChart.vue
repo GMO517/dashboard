@@ -1,8 +1,15 @@
 <template>
   <div class="px-5 py-3">
     <div class="flex items-start">
-      <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2 tabular-nums">$<span ref="chartValue">57.81</span></div>
-      <div ref="chartDeviation" class="text-sm font-medium px-1.5 rounded-full"></div>
+      <div
+        class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2 tabular-nums"
+      >
+        $<span ref="chartValue">57.81</span>
+      </div>
+      <div
+        ref="chartDeviation"
+        class="text-sm font-medium px-1.5 rounded-full"
+      ></div>
     </div>
   </div>
   <div class="grow">
@@ -11,52 +18,84 @@
 </template>
 
 <script>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { useDark } from '@vueuse/core'
-import { getChartColors } from './ChartjsConfig'
+import { ref, watch, onMounted, onUnmounted } from "vue";
+import { useDark } from "@vueuse/core";
+import { getChartColors } from "./ChartjsConfig";
 
 import {
-  Chart, LineController, LineElement, PointElement, LinearScale, TimeScale, Tooltip,
-} from 'chart.js'
-import 'chartjs-adapter-moment'
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+} from "chart.js";
+import "chartjs-adapter-moment";
 
 // Import utilities
-import { adjustColorOpacity, getCssVariable, formatValue } from '../utils/Utils'
+import {
+  adjustColorOpacity,
+  getCssVariable,
+  formatValue,
+} from "../utils/Utils";
 
-Chart.register(LineController, LineElement, PointElement, LinearScale, TimeScale, Tooltip)
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+);
 
 export default {
-  name: 'RealtimeChart',
-  props: ['data', 'width', 'height'],
+  name: "RealtimeChart",
+  props: ["data", "width", "height"],
   setup(props) {
-
-    const canvas = ref(null)
-    const chartValue = ref(null)
-    const chartDeviation = ref(null)
-    let chart = null
-    const darkMode = useDark()
-    const { textColor, gridColor, tooltipTitleColor, tooltipBodyColor, tooltipBgColor, tooltipBorderColor } = getChartColors()
+    const canvas = ref(null);
+    const chartValue = ref(null);
+    const chartDeviation = ref(null);
+    let chart = null;
+    const darkMode = useDark();
+    const {
+      textColor,
+      gridColor,
+      tooltipTitleColor,
+      tooltipBodyColor,
+      tooltipBgColor,
+      tooltipBorderColor,
+    } = getChartColors();
 
     // function that updates header values
     const handleHeaderValues = (data, chartValue, chartDeviation) => {
-      const currentValue = data.datasets[0].data[data.datasets[0].data.length - 1]
-      const previousValue = data.datasets[0].data[data.datasets[0].data.length - 2]
-      const diff = ((currentValue - previousValue) / previousValue) * 100
-      chartValue.value.innerHTML = data.datasets[0].data[data.datasets[0].data.length - 1]
+      const currentValue =
+        data.datasets[0].data[data.datasets[0].data.length - 1];
+      const previousValue =
+        data.datasets[0].data[data.datasets[0].data.length - 2];
+      const diff = ((currentValue - previousValue) / previousValue) * 100;
+      chartValue.value.innerHTML =
+        data.datasets[0].data[data.datasets[0].data.length - 1];
       if (diff < 0) {
-        chartDeviation.value.style.backgroundColor = adjustColorOpacity(getCssVariable('--color-red-500'), 0.2)
-        chartDeviation.value.style.color = getCssVariable('--color-red-700');
+        chartDeviation.value.style.backgroundColor = adjustColorOpacity(
+          getCssVariable("--color-red-500"),
+          0.2,
+        );
+        chartDeviation.value.style.color = getCssVariable("--color-red-700");
       } else {
-        chartDeviation.value.style.backgroundColor = adjustColorOpacity(getCssVariable('--color-green-500'), 0.2)
-        chartDeviation.value.style.color = getCssVariable('--color-green-700');
-      }      
-      chartDeviation.value.innerHTML = `${diff > 0 ? '+' : ''}${diff.toFixed(2)}%`
-    }    
-    
+        chartDeviation.value.style.backgroundColor = adjustColorOpacity(
+          getCssVariable("--color-green-500"),
+          0.2,
+        );
+        chartDeviation.value.style.color = getCssVariable("--color-green-700");
+      }
+      chartDeviation.value.innerHTML = `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`;
+    };
+
     onMounted(() => {
-      const ctx = canvas.value
+      const ctx = canvas.value;
       chart = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: props.data,
         options: {
           layout: {
@@ -76,16 +115,16 @@ export default {
               },
               grid: {
                 color: darkMode.value ? gridColor.dark : gridColor.light,
-              },              
+              },
             },
             x: {
-              type: 'time',
+              type: "time",
               time: {
-                parser: 'hh:mm:ss',
-                unit: 'second',
-                tooltipFormat: 'MMM DD, H:mm:ss a',
+                parser: "hh:mm:ss",
+                unit: "second",
+                tooltipFormat: "MMM DD, H:mm:ss a",
                 displayFormats: {
-                  second: 'H:mm:ss',
+                  second: "H:mm:ss",
                 },
               },
               border: {
@@ -112,65 +151,74 @@ export default {
               callbacks: {
                 label: (context) => formatValue(context.parsed.y),
               },
-              titleColor: darkMode.value ? tooltipTitleColor.dark : tooltipTitleColor.light,
-              bodyColor: darkMode.value ? tooltipBodyColor.dark : tooltipBodyColor.light,
-              backgroundColor: darkMode.value ? tooltipBgColor.dark : tooltipBgColor.light,
-              borderColor: darkMode.value ? tooltipBorderColor.dark : tooltipBorderColor.light,               
+              titleColor: darkMode.value
+                ? tooltipTitleColor.dark
+                : tooltipTitleColor.light,
+              bodyColor: darkMode.value
+                ? tooltipBodyColor.dark
+                : tooltipBodyColor.light,
+              backgroundColor: darkMode.value
+                ? tooltipBgColor.dark
+                : tooltipBgColor.light,
+              borderColor: darkMode.value
+                ? tooltipBorderColor.dark
+                : tooltipBorderColor.light,
             },
           },
           interaction: {
             intersect: false,
-            mode: 'nearest',
+            mode: "nearest",
           },
           animation: false,
           maintainAspectRatio: false,
         },
-      })
+      });
       // output header values
-      handleHeaderValues(props.data, chartValue, chartDeviation)
-    })
+      handleHeaderValues(props.data, chartValue, chartDeviation);
+    });
 
-    onUnmounted(() => chart.destroy())
+    onUnmounted(() => chart.destroy());
 
     watch(
       () => props.data,
       (data) => {
         // update chart
-        chart.data = data
-        chart.update()
+        chart.data = data;
+        chart.update();
         // update header values
-        handleHeaderValues(data, chartValue, chartDeviation)        
-      }
-    )
+        handleHeaderValues(data, chartValue, chartDeviation);
+      },
+    );
 
     watch(
       () => darkMode.value,
       () => {
         if (darkMode.value) {
-          chart.options.scales.x.ticks.color = textColor.dark
-          chart.options.scales.y.ticks.color = textColor.dark
-          chart.options.scales.y.grid.color = gridColor.dark
-          chart.options.plugins.tooltip.titleColor = tooltipTitleColor.dark
-          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.dark
-          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.dark
-          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.dark
+          chart.options.scales.x.ticks.color = textColor.dark;
+          chart.options.scales.y.ticks.color = textColor.dark;
+          chart.options.scales.y.grid.color = gridColor.dark;
+          chart.options.plugins.tooltip.titleColor = tooltipTitleColor.dark;
+          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.dark;
+          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.dark;
+          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.dark;
         } else {
-          chart.options.scales.x.ticks.color = textColor.light
-          chart.options.scales.y.ticks.color = textColor.light
-          chart.options.scales.y.grid.color = gridColor.light
-          chart.options.plugins.tooltip.titleColor = tooltipTitleColor.light
-          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.light
-          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.light
-          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.light
+          chart.options.scales.x.ticks.color = textColor.light;
+          chart.options.scales.y.ticks.color = textColor.light;
+          chart.options.scales.y.grid.color = gridColor.light;
+          chart.options.plugins.tooltip.titleColor = tooltipTitleColor.light;
+          chart.options.plugins.tooltip.bodyColor = tooltipBodyColor.light;
+          chart.options.plugins.tooltip.backgroundColor = tooltipBgColor.light;
+          chart.options.plugins.tooltip.borderColor = tooltipBorderColor.light;
         }
-        chart.update('none')
-      })    
+        chart.update("none");
+      },
+    );
 
     return {
       canvas,
       chartValue,
       chartDeviation,
-    }
-  }
-}
+    };
+  },
+};
 </script>

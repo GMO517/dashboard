@@ -1,9 +1,24 @@
 <template>
-  <div class="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
-    <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center">
-      <h2 class="font-semibold text-gray-800 dark:text-gray-100">Real Time Value</h2>
+  <div
+    class="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl"
+  >
+    <header
+      class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60 flex items-center"
+    >
+      <h2 class="font-semibold text-gray-800 dark:text-gray-100">
+        Real Time Value
+      </h2>
       <Tooltip class="ml-2">
-        <div class="text-xs text-center whitespace-nowrap">Built with <a class="underline" href="https://www.chartjs.org/" target="_blank" rel="noreferrer">Chart.js</a></div>
+        <div class="text-xs text-center whitespace-nowrap">
+          Built with
+          <a
+            class="underline"
+            href="https://www.chartjs.org/"
+            target="_blank"
+            rel="noreferrer"
+            >Chart.js</a
+          >
+        </div>
       </Tooltip>
     </header>
     <!-- Chart built with Chart.js 3 -->
@@ -13,29 +28,28 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import Tooltip from '../../components/Tooltip.vue'
-import { chartAreaGradient } from '../../charts/ChartjsConfig'
-import RealtimeChart from '../../charts/RealtimeChart.vue'
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import Tooltip from "../../components/Tooltip.vue";
+import { chartAreaGradient } from "../../charts/ChartjsConfig";
+import RealtimeChart from "../../charts/RealtimeChart.vue";
 
 // Import utilities
-import { adjustColorOpacity, getCssVariable } from '../../utils/Utils'
+import { adjustColorOpacity, getCssVariable } from "../../utils/Utils";
 
 export default {
-  name: 'DashboardCard05',
+  name: "DashboardCard05",
   components: {
     Tooltip,
     RealtimeChart,
   },
   setup() {
-
     // IMPORTANT:
     // Code below is for demo purpose only, and it's not covered by support.
     // If you need to replace dummy data with real data,
-    // refer to Chart.js documentation: https://www.chartjs.org/docs/latest    
+    // refer to Chart.js documentation: https://www.chartjs.org/docs/latest
 
-    const counter = ref(0)
-    const range = ref(35)
+    const counter = ref(0);
+    const range = ref(35);
 
     // Dummy data to be looped
     const sampleData = [
@@ -45,32 +59,32 @@ export default {
       50.95, 49.65, 48.09, 49.81, 47.85, 49.52, 50.21, 52.22, 54.42, 53.42,
       50.91, 58.52, 53.37, 57.58, 59.09, 59.36, 58.71, 59.42, 55.93, 57.71,
       50.62, 56.28, 57.37, 53.08, 55.94, 55.82, 53.94, 52.65, 50.25,
-    ]
-    
-    const slicedData = ref(sampleData.slice(0, range.value))
+    ];
+
+    const slicedData = ref(sampleData.slice(0, range.value));
 
     // Generate fake dates from now to back in time
     const generateDates = () => {
-      const now = new Date()
-      const dates = []
+      const now = new Date();
+      const dates = [];
       sampleData.forEach((v, i) => {
-        dates.push(new Date(now - 2000 - i * 2000))
-      })
-      return dates
-    }
-    
-    const slicedLabels = ref(generateDates().slice(0, range.value).reverse())
+        dates.push(new Date(now - 2000 - i * 2000));
+      });
+      return dates;
+    };
+
+    const slicedLabels = ref(generateDates().slice(0, range.value).reverse());
 
     // Fake update every 2 seconds
-    const interval = ref(null)
+    const interval = ref(null);
     onMounted(() => {
       interval.value = setInterval(() => {
-        counter.value++
-      }, 2000)
-    })
+        counter.value++;
+      }, 2000);
+    });
     onUnmounted(() => {
-      clearInterval(interval)
-    })
+      clearInterval(interval);
+    });
 
     // Loop through data array and update
     watch(counter, () => {
@@ -79,10 +93,10 @@ export default {
         range.value = 0;
       }
       slicedData.value.shift();
-      slicedData.value.push(sampleData[range.value]);      
-      slicedLabels.value.shift()
-      slicedLabels.value.push(new Date())
-    })
+      slicedData.value.push(sampleData[range.value]);
+      slicedLabels.value.shift();
+      slicedLabels.value.push(new Date());
+    });
 
     const chartData = computed(() => {
       return {
@@ -91,25 +105,37 @@ export default {
           {
             data: [...slicedData.value],
             fill: true,
-            backgroundColor: function(context) {
+            backgroundColor: function (context) {
               const chart = context.chart;
-              const {ctx, chartArea} = chart;
+              const { ctx, chartArea } = chart;
               return chartAreaGradient(ctx, chartArea, [
-                { stop: 0, color: adjustColorOpacity(getCssVariable('--color-violet-500'), 0) },
-                { stop: 1, color: adjustColorOpacity(getCssVariable('--color-violet-500'), 0.2) }
+                {
+                  stop: 0,
+                  color: adjustColorOpacity(
+                    getCssVariable("--color-violet-500"),
+                    0,
+                  ),
+                },
+                {
+                  stop: 1,
+                  color: adjustColorOpacity(
+                    getCssVariable("--color-violet-500"),
+                    0.2,
+                  ),
+                },
               ]);
             },
-            borderColor: getCssVariable('--color-violet-500'),
+            borderColor: getCssVariable("--color-violet-500"),
             borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 3,
-            pointBackgroundColor: getCssVariable('--color-violet-500'),
+            pointBackgroundColor: getCssVariable("--color-violet-500"),
             clip: 20,
             tension: 0.2,
           },
         ],
-      }
-    })
+      };
+    });
 
     return {
       counter,
@@ -118,7 +144,7 @@ export default {
       slicedLabels,
       interval,
       chartData,
-    }  
-  }  
-}
+    };
+  },
+};
 </script>

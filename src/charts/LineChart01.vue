@@ -29,7 +29,7 @@ Chart.register(
   PointElement,
   LinearScale,
   TimeScale,
-  Tooltip
+  Tooltip,
 );
 
 export default {
@@ -111,7 +111,7 @@ export default {
           chart.options.plugins.tooltip.borderColor = tooltipBorderColor.light;
         }
         chart.update("none");
-      }
+      },
     );
 
     // 監聽 data 變動，自動更新 chart
@@ -123,7 +123,7 @@ export default {
           chart.update();
         }
       },
-      { deep: true }
+      { deep: true },
     );
 
     return {
