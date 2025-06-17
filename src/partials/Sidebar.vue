@@ -118,7 +118,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Dashboard</span
+                      >儀錶板</span
                     >
                   </div>
                   <!-- Icon -->
@@ -245,7 +245,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >E-Commerce
+                      >電商平台
                     </span>
                   </div>
                   <!-- Icon -->
@@ -533,7 +533,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Community</span
+                      >社區</span
                     >
                   </div>
                   <!-- Icon -->
@@ -778,7 +778,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Finance</span
+                      >金融</span
                     >
                   </div>
                   <!-- Icon -->
@@ -905,7 +905,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Job Board</span
+                      >徵才</span
                     >
                   </div>
                   <!-- Icon -->
@@ -1032,7 +1032,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Tasks</span
+                      >任務</span
                     >
                   </div>
                   <!-- Icon -->
@@ -1142,7 +1142,7 @@
                       </svg>
                       <span
                         class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                        >Messages</span
+                        >訊息</span
                       >
                     </div>
                     <!-- Badge -->
@@ -1198,7 +1198,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Inbox</span
+                      >收件匣</span
                     >
                   </div>
                 </a>
@@ -1250,7 +1250,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Calendar</span
+                      >行事曆</span
                     >
                   </div>
                 </a>
@@ -1298,7 +1298,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Campaigns</span
+                      >活動</span
                     >
                   </div>
                 </a>
@@ -1343,7 +1343,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Settings</span
+                      >設定</span
                     >
                   </div>
                   <!-- Icon -->
@@ -1542,7 +1542,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Utility</span
+                      >公告</span
                     >
                   </div>
                   <!-- Icon -->
@@ -1724,7 +1724,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Authentication</span
+                      >帳戶中心</span
                     >
                   </div>
                   <!-- Icon -->
@@ -1820,7 +1820,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Onboarding</span
+                      >空組件</span
                     >
                   </div>
                   <!-- Icon -->
@@ -1950,7 +1950,7 @@
                     </svg>
                     <span
                       class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
-                      >Components
+                      >空組件
                     </span>
                   </div>
                   <!-- Icon -->

@@ -42,7 +42,7 @@
 
         <!-- Header: Right side -->
         <div class="flex items-center space-x-3">
-          <div>
+          <!-- <div>
             <button
               class="w-8 h-8 flex items-center justify-center hover:bg-gray-100 lg:hover:bg-gray-200 dark:hover:bg-gray-700/50 dark:lg:hover:bg-gray-800 rounded-full ml-3"
               :class="{ 'bg-gray-200 dark:bg-gray-800': searchModalOpen }"
@@ -72,13 +72,13 @@
               @open-modal="searchModalOpen = true"
               @close-modal="searchModalOpen = false"
             />
-          </div>
-          <Notifications align="right" />
-          <Help align="right" />
+          </div> -->
+          <!-- <Notifications align="right" />
+          <Help align="right" /> -->
           <ThemeToggle />
           <!-- Divider -->
-          <hr class="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" />
-          <UserMenu align="right" />
+          <!-- <hr class="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" /> -->
+          <!-- <UserMenu align="right" /> -->
         </div>
       </div>
     </div>
