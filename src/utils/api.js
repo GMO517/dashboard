@@ -32,3 +32,7 @@ export const CoinGeckoAPI = axios.create({
 export const CountryAPI = axios.create({
   baseURL: "https://restcountries.com/v3.1",
 });
+
+export const Covid19API = axios.create({
+  baseURL: "https://disease.sh/v3/covid-19",
+});
