@@ -55,7 +55,7 @@ const defaultData = {
       borderRadius: 4,
     },
     {
-      label: "面積",
+      label: "國土面積",
       data: [200, 4800],
       backgroundColor: getCssVariable("--color-violet-500"),
       hoverBackgroundColor: getCssVariable("--color-violet-600"),
@@ -75,7 +75,8 @@ onMounted(async () => {
       const twName =
         item.translations?.cht?.common ||
         item.translations?.zho?.common ||
-        item.name.common;
+        country.translateSpecialCountryName(item.name.common);
+
       return {
         label: convertToTC(twName),
         value: convertToTC(item.name.common),
@@ -114,7 +115,7 @@ async function fetchCountriesData(data) {
         backgroundColor: getCssVariable("--color-sky-500"),
       },
       {
-        label: "面積",
+        label: "國土面積",
         data: areaArr,
         backgroundColor: getCssVariable("--color-violet-500"),
       },
