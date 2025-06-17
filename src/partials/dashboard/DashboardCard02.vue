@@ -5,7 +5,7 @@
     <div class="px-5 pt-5">
       <header class="flex justify-between items-start mb-2">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          新冠確診人數
+          新冠確診人數紀錄
         </h2>
         <!-- <EditMenu align="right" class="relative inline-flex">
           <li>
@@ -34,16 +34,11 @@
       <div
         class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1"
       >
-        確診
+        單日確診最高紀錄
       </div>
       <div class="flex items-start">
         <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">
-          $17,489
-        </div>
-        <div
-          class="text-sm font-medium text-red-700 px-1.5 bg-red-500/20 rounded-full"
-        >
-          -14%
+          {{ maxCases }}
         </div>
       </div>
     </div>
@@ -60,8 +55,14 @@ import { ref, onMounted } from "vue";
 import { chartAreaGradient } from "../../charts/ChartjsConfig";
 import LineChart from "../../charts/LineChart03.vue";
 import EditMenu from "../../components/DropdownEditMenu.vue";
-import { adjustColorOpacity, getCssVariable } from "../../utils/Utils";
+import {
+  adjustColorOpacity,
+  getCssVariable,
+  formatTWNumber,
+} from "../../utils/Utils";
 import covidData from "../../utils/covidData";
+
+const maxCases = ref(0);
 
 const chartData = ref({
   labels: [
@@ -155,31 +156,17 @@ const chartData = ref({
 });
 
 const fetchCovidData = async () => {
-  const data = await covidData.getCovidData("Taiwan");
-  const timeLabels = [];
-  const cases = [];
-  const deaths = [];
-
-  // 處理確診數資料
-  for (const date in data.timeline.cases) {
-    // 處理日期格式
-    const [month, day, year] = date.split("/");
-    const fullYear = "20" + year; // 將 '23' 轉換為 '2023'
-    const fullMonth = month.length === 1 ? "0" + month : month;
-    const fullDay = day.length === 1 ? "0" + day : day;
-    const formattedDate = `${fullMonth}-${fullDay}-${fullYear}`;
-
-    timeLabels.push(formattedDate);
-    cases.push(data.timeline.cases[date]);
-    deaths.push(data.timeline.deaths[date]);
-  }
+  // 取得 disease.sh API 全部資料
+  const data = await covidData.getAllCovidData("Taiwan");
+  // 取得每月彙總資料
+  const summary = covidData.getMonthlyCovidSummary(data.timeline);
 
   chartData.value = {
-    labels: timeLabels,
+    labels: summary.labels,
     datasets: [
       {
         label: "確診人數",
-        data: cases,
+        data: summary.cases,
         borderColor: getCssVariable("--color-violet-500"),
         borderWidth: 2,
         pointRadius: 0,
@@ -193,7 +180,7 @@ const fetchCovidData = async () => {
       },
       {
         label: "死亡人數",
-        data: deaths,
+        data: summary.deaths,
         borderColor: adjustColorOpacity(
           getCssVariable("--color-gray-500"),
           0.25
@@ -216,12 +203,13 @@ const fetchCovidData = async () => {
       },
     ],
   };
-  console.log("chartData.value", chartData.value);
-  console.log("timeLabels", timeLabels);
-  console.log("cases", cases);
-  console.log("deaths", deaths);
+  // console.log("chartData.value", chartData.value);
+  maxCases.value = formatTWNumber(
+    Math.max(...chartData.value.datasets[0].data)
+  );
+  console.log("🚀 ~ fetchCovidData ~ maxCases:", maxCases);
 };
-// 測試 COVID-19 API
+
 onMounted(() => {
   fetchCovidData();
 });

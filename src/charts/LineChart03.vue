@@ -20,7 +20,7 @@ import {
 import "chartjs-adapter-moment";
 
 // Import utilities
-import { formatValue } from "../utils/Utils";
+import { formatTWNumber } from "../utils/Utils";
 
 Chart.register(
   LineController,
@@ -60,7 +60,7 @@ export default {
             x: {
               type: "time",
               time: {
-                unit: "week",
+                unit: "month",
                 tooltipFormat: "YYYY-MM-DD",
               },
               ticks: {
@@ -74,7 +74,7 @@ export default {
             tooltip: {
               callbacks: {
                 title: () => false, // Disable tooltip title
-                label: (context) => formatValue(context.parsed.y),
+                label: (context) => formatTWNumber(context.parsed.y),
               },
               bodyColor: darkMode.value
                 ? tooltipBodyColor.dark
