@@ -54,16 +54,26 @@ export default {
           },
           scales: {
             y: {
-              display: true,
+              display: false,
               beginAtZero: true,
               position: "left",
+              ticks: {
+                callback: function (value) {
+                  return formatTWNumber(value);
+                },
+              },
             },
             y1: {
-              display: true,
+              display: false,
               beginAtZero: true,
               position: "right",
               grid: {
                 drawOnChartArea: false,
+              },
+              ticks: {
+                callback: function (value) {
+                  return formatTWNumber(value);
+                },
               },
             },
             x: {
@@ -72,7 +82,11 @@ export default {
                 parser: "YYYY-M",
                 unit: "month",
               },
-              display: false,
+              ticks: {
+                autoSkip: true,
+                maxTicksLimit: 4,
+              },
+              display: true,
             },
           },
           plugins: {

@@ -5,7 +5,7 @@
     <div class="px-5 pt-5">
       <header class="flex justify-between items-start mb-2">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          各國確診數對比
+          各國確診數對比(臺、美、日)
         </h2>
         <!-- 
         
@@ -35,7 +35,12 @@
       <div
         class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1"
       >
-        確診人數
+        最高單月確診人數
+      </div>
+      <div class="flex items-start">
+        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">
+          {{ formatTWNumber(maxCases) }}
+        </div>
       </div>
     </div>
     <!-- Chart built with Chart.js 3 -->
@@ -52,7 +57,7 @@ import { chartAreaGradient } from "../../charts/ChartjsConfig";
 import LineChart from "../../charts/LineChart04.vue";
 import EditMenu from "../../components/DropdownEditMenu.vue";
 import covidData from "../../utils/covidData";
-
+import { formatTWNumber } from "../../utils/Utils";
 // Import utilities
 import { adjustColorOpacity, getCssVariable } from "../../utils/Utils";
 
@@ -139,13 +144,20 @@ const chartData = ref({
 
 const countries = ref(["Taiwan", "United States", "Japan"]);
 const countryNames = ["台灣", "美國", "日本"];
+const maxCases = ref(0);
 const setChartData = async () => {
   const data = await covidData.getAllCovidDataByCountries(countries.value);
   const sums = [];
   data.forEach((item) => {
     sums.push(covidData.getMonthlyCovidSummary(item.timeline));
   });
-  // console.log("sums", sums);
+  // 計算所有國家 cases 的最大值
+  let max = 0;
+  sums.forEach((item) => {
+    const localMax = Math.max.apply(null, item.cases);
+    if (localMax > max) max = localMax;
+  });
+  maxCases.value = max;
   chartData.value = {
     labels: sums[0].labels,
     datasets: sums.flatMap(function (item, idx) {
@@ -153,6 +165,7 @@ const setChartData = async () => {
         {
           label: countryNames[idx] + "確診人數",
           data: item.cases,
+          yAxisID: "y",
           fill: true,
           backgroundColor: function (context) {
             const chart = context.chart;
@@ -188,6 +201,7 @@ const setChartData = async () => {
         {
           label: countryNames[idx] + " 死亡",
           data: item.deaths,
+          yAxisID: "y1",
           borderColor: adjustColorOpacity(
             getCssVariable("--color-gray-500"),
             0.25
