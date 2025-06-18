@@ -20,7 +20,7 @@ import {
 import "chartjs-adapter-moment";
 
 // Import utilities
-import { formatValue } from "../utils/Utils";
+import { formatTWNumber } from "../utils/Utils";
 
 Chart.register(
   LineController,
@@ -29,7 +29,7 @@ Chart.register(
   PointElement,
   LinearScale,
   TimeScale,
-  Tooltip,
+  Tooltip
 );
 
 export default {
@@ -60,7 +60,7 @@ export default {
             x: {
               type: "time",
               time: {
-                parser: "YYYY-M-D",
+                parser: "YYYY-M",
                 unit: "month",
               },
               display: false,
@@ -69,8 +69,36 @@ export default {
           plugins: {
             tooltip: {
               callbacks: {
-                title: () => false, // Disable tooltip title
-                label: (context) => formatValue(context.parsed.y),
+                title: function (context) {
+                  // 直接用 labels 陣列的原始字串
+                  if (context && context.length > 0) {
+                    // 取得 x 軸 index
+                    var dataIndex = context[0].dataIndex;
+                    // 取得原始 labels
+                    var labels = context[0].chart.data.labels;
+                    // 直接回傳原始 label（如 2023-03）
+                    if (labels && labels[dataIndex]) {
+                      // 轉成 2023-3 格式
+                      var match = labels[dataIndex].match(
+                        /^(\d{4})-(0?\\d{1,2})/
+                      );
+                      if (match) {
+                        return match[1] + " - " + parseInt(match[2], 10);
+                      }
+                      return labels[dataIndex];
+                    }
+                  }
+                  return "";
+                },
+                label: function (context) {
+                  // 顯示國家名稱與數字
+                  var label = "";
+                  if (context.dataset && context.dataset.label) {
+                    label += context.dataset.label + ": ";
+                  }
+                  label += formatTWNumber(context.parsed.y);
+                  return label;
+                },
               },
               bodyColor: darkMode.value
                 ? tooltipBodyColor.dark
@@ -111,7 +139,7 @@ export default {
           chart.options.plugins.tooltip.borderColor = tooltipBorderColor.light;
         }
         chart.update("none");
-      },
+      }
     );
 
     // 監聽 data 變動，自動更新 chart
@@ -123,7 +151,7 @@ export default {
           chart.update();
         }
       },
-      { deep: true },
+      { deep: true }
     );
 
     return {

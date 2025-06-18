@@ -5,9 +5,10 @@
     <div class="px-5 pt-5">
       <header class="flex justify-between items-start mb-2">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          Acme Professional
+          各國確診數對比
         </h2>
-        <EditMenu align="right" class="relative inline-flex">
+        <!-- 
+        
           <li>
             <a
               class="font-medium text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 flex py-1 px-3"
@@ -29,22 +30,12 @@
               >Remove</a
             >
           </li>
-        </EditMenu>
+        </EditMenu> -->
       </header>
       <div
         class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1"
       >
-        Sales
-      </div>
-      <div class="flex items-start">
-        <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">
-          $9,962
-        </div>
-        <div
-          class="text-sm font-medium text-green-700 px-1.5 bg-green-500/20 rounded-full"
-        >
-          +29%
-        </div>
+        確診人數
       </div>
     </div>
     <!-- Chart built with Chart.js 3 -->
@@ -55,58 +46,113 @@
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import { chartAreaGradient } from "../../charts/ChartjsConfig";
 import LineChart from "../../charts/LineChart01.vue";
 import EditMenu from "../../components/DropdownEditMenu.vue";
+import covidData from "../../utils/covidData";
 
 // Import utilities
 import { adjustColorOpacity, getCssVariable } from "../../utils/Utils";
 
-export default {
-  name: "DashboardCard01",
-  components: {
-    LineChart,
-    EditMenu,
-  },
-  setup() {
-    const chartData = ref({
-      labels: [
-        "12-01-2022",
-        "01-01-2023",
-        "02-01-2023",
-        "03-01-2023",
-        "04-01-2023",
-        "05-01-2023",
-        "06-01-2023",
-        "07-01-2023",
-        "08-01-2023",
-        "09-01-2023",
-        "10-01-2023",
-        "11-01-2023",
-        "12-01-2023",
-        "01-01-2024",
-        "02-01-2024",
-        "03-01-2024",
-        "04-01-2024",
-        "05-01-2024",
-        "06-01-2024",
-        "07-01-2024",
-        "08-01-2024",
-        "09-01-2024",
-        "10-01-2024",
-        "11-01-2024",
-        "12-01-2024",
-        "01-01-2025",
+const chartData = ref({
+  labels: [
+    "12-01-2022",
+    "01-01-2023",
+
+    "01-01-2024",
+    "02-01-2024",
+    "03-01-2024",
+    "04-01-2024",
+    "05-01-2024",
+    "06-01-2024",
+    "07-01-2024",
+    "08-01-2024",
+    "09-01-2024",
+    "10-01-2024",
+    "11-01-2024",
+    "12-01-2024",
+    "01-01-2025",
+  ],
+  datasets: [
+    // Indigo line
+    {
+      data: [
+        540, 466, 540, 466, 385, 432, 334, 334, 289, 289, 200, 289, 222, 289,
+        289, 403, 554, 304, 289, 270, 134, 270, 829, 344, 388, 364,
       ],
-      datasets: [
-        // Indigo line
+      fill: true,
+      backgroundColor: function (context) {
+        const chart = context.chart;
+        const { ctx, chartArea } = chart;
+        return chartAreaGradient(ctx, chartArea, [
+          {
+            stop: 0,
+            color: adjustColorOpacity(getCssVariable("--color-violet-500"), 0),
+          },
+          {
+            stop: 1,
+            color: adjustColorOpacity(
+              getCssVariable("--color-violet-500"),
+              0.2
+            ),
+          },
+        ]);
+      },
+      borderColor: getCssVariable("--color-violet-500"),
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 3,
+      pointBackgroundColor: getCssVariable("--color-violet-500"),
+      pointHoverBackgroundColor: getCssVariable("--color-violet-500"),
+      pointBorderWidth: 0,
+      pointHoverBorderWidth: 0,
+      clip: 20,
+      tension: 0.2,
+    },
+    // Gray line
+    {
+      data: [
+        689, 562, 477, 477, 477, 477, 458, 314, 430, 378, 430, 498, 642, 350,
+        145, 145, 354, 260, 188, 188, 300, 300, 282, 364, 660, 554,
+      ],
+      borderColor: adjustColorOpacity(getCssVariable("--color-gray-500"), 0.25),
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 3,
+      pointBackgroundColor: adjustColorOpacity(
+        getCssVariable("--color-gray-500"),
+        0.25
+      ),
+      pointHoverBackgroundColor: adjustColorOpacity(
+        getCssVariable("--color-gray-500"),
+        0.25
+      ),
+      pointBorderWidth: 0,
+      pointHoverBorderWidth: 0,
+      clip: 20,
+      tension: 0.2,
+    },
+  ],
+});
+
+const countries = ref(["Taiwan", "United States", "Japan"]);
+const countryNames = ["台灣", "美國", "日本"];
+const setChartData = async () => {
+  const data = await covidData.getAllCovidDataByCountries(countries.value);
+  const sums = [];
+  data.forEach((item) => {
+    sums.push(covidData.getMonthlyCovidSummary(item.timeline));
+  });
+  // console.log("sums", sums);
+  chartData.value = {
+    labels: sums[0].labels,
+    datasets: sums.flatMap(function (item, idx) {
+      return [
         {
-          data: [
-            540, 466, 540, 466, 385, 432, 334, 334, 289, 289, 200, 289, 222,
-            289, 289, 403, 554, 304, 289, 270, 134, 270, 829, 344, 388, 364,
-          ],
+          label: countryNames[idx] + "確診人數",
+          data: item.cases,
           fill: true,
           backgroundColor: function (context) {
             const chart = context.chart;
@@ -116,14 +162,14 @@ export default {
                 stop: 0,
                 color: adjustColorOpacity(
                   getCssVariable("--color-violet-500"),
-                  0,
+                  0
                 ),
               },
               {
                 stop: 1,
                 color: adjustColorOpacity(
                   getCssVariable("--color-violet-500"),
-                  0.2,
+                  0.2
                 ),
               },
             ]);
@@ -139,38 +185,34 @@ export default {
           clip: 20,
           tension: 0.2,
         },
-        // Gray line
         {
-          data: [
-            689, 562, 477, 477, 477, 477, 458, 314, 430, 378, 430, 498, 642,
-            350, 145, 145, 354, 260, 188, 188, 300, 300, 282, 364, 660, 554,
-          ],
+          label: countryNames[idx] + " 死亡",
+          data: item.deaths,
           borderColor: adjustColorOpacity(
             getCssVariable("--color-gray-500"),
-            0.25,
+            0.25
           ),
           borderWidth: 2,
           pointRadius: 0,
           pointHoverRadius: 3,
           pointBackgroundColor: adjustColorOpacity(
             getCssVariable("--color-gray-500"),
-            0.25,
+            0.25
           ),
           pointHoverBackgroundColor: adjustColorOpacity(
             getCssVariable("--color-gray-500"),
-            0.25,
+            0.25
           ),
           pointBorderWidth: 0,
           pointHoverBorderWidth: 0,
           clip: 20,
           tension: 0.2,
         },
-      ],
-    });
-
-    return {
-      chartData,
-    };
-  },
+      ];
+    }),
+  };
 };
+onMounted(async () => {
+  await setChartData();
+});
 </script>

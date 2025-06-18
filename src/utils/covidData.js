@@ -62,10 +62,20 @@ export const getMonthlyCovidSummary = (timeline) => {
   return { labels, cases, deaths, recovered };
 };
 
+export const getAllCovidDataByCountries = async (countries) => {
+  const data = [];
+  for (const country of countries) {
+    const res = await Covid19API.get(`/historical/${country}?lastdays=all`);
+    data.push(res.data);
+  }
+  return data;
+};
+
 const covidData = {
   getCovidData,
   getAllCovidData,
   getMonthlyCovidSummary,
+  getAllCovidDataByCountries,
 };
 
 export default covidData;
