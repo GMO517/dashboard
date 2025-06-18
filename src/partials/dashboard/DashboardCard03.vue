@@ -49,7 +49,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { chartAreaGradient } from "../../charts/ChartjsConfig";
-import LineChart from "../../charts/LineChart01.vue";
+import LineChart from "../../charts/LineChart04.vue";
 import EditMenu from "../../components/DropdownEditMenu.vue";
 import covidData from "../../utils/covidData";
 

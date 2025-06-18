@@ -54,13 +54,22 @@ export default {
           },
           scales: {
             y: {
-              display: false,
+              display: true,
               beginAtZero: true,
+              position: "left",
+            },
+            y1: {
+              display: true,
+              beginAtZero: true,
+              position: "right",
+              grid: {
+                drawOnChartArea: false,
+              },
             },
             x: {
               type: "time",
               time: {
-                parser: "YYYY-MM-D",
+                parser: "YYYY-M",
                 unit: "month",
               },
               display: false,
@@ -69,8 +78,36 @@ export default {
           plugins: {
             tooltip: {
               callbacks: {
-                title: () => false, // Disable tooltip title
-                label: (context) => formatValue(context.parsed.y),
+                title: function (context) {
+                  // 直接用 labels 陣列的原始字串
+                  if (context && context.length > 0) {
+                    // 取得 x 軸 index
+                    var dataIndex = context[0].dataIndex;
+                    // 取得原始 labels
+                    var labels = context[0].chart.data.labels;
+                    // 直接回傳原始 label（如 2023-03）
+                    if (labels && labels[dataIndex]) {
+                      // 轉成 2023-3 格式
+                      var match = labels[dataIndex].match(
+                        /^(\d{4})-(0?\\d{1,2})/
+                      );
+                      if (match) {
+                        return match[1] + " - " + parseInt(match[2], 10);
+                      }
+                      return labels[dataIndex];
+                    }
+                  }
+                  return "";
+                },
+                label: function (context) {
+                  // 顯示國家名稱與數字
+                  var label = "";
+                  if (context.dataset && context.dataset.label) {
+                    label += context.dataset.label + ": ";
+                  }
+                  label += formatTWNumber(context.parsed.y);
+                  return label;
+                },
               },
               bodyColor: darkMode.value
                 ? tooltipBodyColor.dark
