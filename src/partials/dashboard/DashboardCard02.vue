@@ -5,7 +5,7 @@
     <div class="px-5 pt-5">
       <header class="flex justify-between items-start mb-2">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-          新冠確診人數紀錄
+          台灣新冠確診人數紀錄
         </h2>
         <!-- <EditMenu align="right" class="relative inline-flex">
           <li>
@@ -34,7 +34,7 @@
       <div
         class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1"
       >
-        單日確診最高紀錄
+        單月確診最高紀錄
       </div>
       <div class="flex items-start">
         <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">
